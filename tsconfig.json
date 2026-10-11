@@ -1,0 +1,5 @@
+{
+  // The engine's options and types, laid in .claude-plugin/types/ at each load.
+  "extends": "./.claude-plugin/types/tsconfig.json",
+  "compilerOptions": { "types": ["claude-code", "claude-code-tools"] }
+}

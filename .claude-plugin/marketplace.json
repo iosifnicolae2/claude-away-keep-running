@@ -1,0 +1,14 @@
+{
+  "name": "claude-away-keep-running",
+  "description": "away-keep-running: turn your Mac's screens off while Claude Code keeps working.",
+  "owner": {
+    "name": "Iosif Nicolae"
+  },
+  "plugins": [
+    {
+      "name": "away-keep-running",
+      "source": "./",
+      "description": "/away turns your Mac's screens off while the Mac stays awake, so Claude Code keeps working while you're gone."
+    }
+  ]
+}

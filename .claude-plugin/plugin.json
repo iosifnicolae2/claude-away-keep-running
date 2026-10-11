@@ -1,0 +1,10 @@
+{
+  "name": "away-keep-running",
+  "version": "0.1.0",
+  "description": "/away turns your Mac's screens off while the Mac stays awake, so Claude Code keeps working while you're gone. Move the mouse or press a key to come back.",
+  "author": { "name": "Iosif Nicolae" },
+  "homepage": "https://github.com/iosifnicolae2/claude-away-keep-running",
+  "repository": "https://github.com/iosifnicolae2/claude-away-keep-running",
+  "license": "MIT",
+  "keywords": ["macos", "screen", "display", "caffeinate", "away"]
+}
