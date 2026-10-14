@@ -2,7 +2,7 @@ import type { CommandSpec, EngineInterface, Register, ToolSpec } from 'claude-co
 
 // Screen off, Mac awake: /away and the screen_off tool turn the physical screens off until the user
 // moves the mouse or presses a key; the Mac doesn't sleep or lock, so Claude keeps working.
-// Virtual displays (test, recording or streaming displays) stay on.
+// Virtual displays (test, recording or streaming displays) stay on, and the sound is muted meanwhile.
 
 const BACK_TEXT = 'Screens are off and the Mac stays awake. Move the mouse or press a key to turn them back on.'
 const FALLBACK_TEXT = 'Could not turn the screens off, so they went to sleep instead. The Mac may lock.'
@@ -24,10 +24,14 @@ export const SCREEN_OFF_TOOL: ToolSpec = {
  *  else "failed: why", plus "virtual displays on" when display sleep would stop them. */
 export const awayArgv = (root: string) => ['/bin/sh', `${root}/bin/away.sh`]
 
+/** Puts back the sound an away muted but never restored (it crashed, or the Mac rebooted), unless an away is on. */
+export const recoverSoundArgv = (root: string) => ['/bin/sh', `${root}/bin/sound.sh`, 'recover']
+
 export const register: Register = on => {
   on('session.start', async ($, e, next) => {
     await $.command.register(AWAY_COMMAND)
     await $.tool.register(SCREEN_OFF_TOOL)
+    await $.process.run(recoverSoundArgv($.plugin.root)).catch(() => undefined)
     return next(e)
   })
   on('command.run', { command: 'away' }, async $ => ({ text: await screenOff($).catch(failedText) }))

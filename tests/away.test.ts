@@ -49,12 +49,14 @@ test('when the blackout fails while virtual displays run, nothing sleeps', async
   expect(ran).not.toContainEqual(['pmset', 'displaysleepnow'])
 })
 
-test('session start registers /away and the screen_off tool', async ($, on) => {
+test('session start registers /away and the screen_off tool, and puts back sound a crashed away left muted', async ($, on) => {
   const commands: string[] = [], tools: string[] = []
+  const ran = fakeHost(on)
   on('session.start', ($, e) => ({ cwd: e.cwd }))
   on('command.register', ($, e) => { commands.push(e.name); return { value: { command: e.name } } })
   on('tool.register', ($, e) => { tools.push(e.name); return { value: { tool: `mcp__away-keep-running__${e.name}` } } })
   await $.session.start({ cwd: '/project', surface: 'terminal', isInteractive: true })
   expect(commands).toEqual(['away'])
   expect(tools).toEqual(['screen_off'])
+  expect(ran.some(argv => /\/bin\/sound\.sh$/.test(argv[1] ?? '') && argv[2] === 'recover')).toBe(true)
 })

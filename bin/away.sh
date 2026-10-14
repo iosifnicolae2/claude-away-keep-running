@@ -1,7 +1,7 @@
 #!/bin/sh
 # Turns the physical screens off (bin/blackout.js) detached, so a plugin reload can't cut it off,
 # and prints its first status line ("black" or "failed: why"). Used by hooks/register.ts for /away and the screen_off tool.
-# Virtual displays (test, recording or streaming displays) stay on.
+# Virtual displays (test, recording or streaming displays) stay on. The sound is muted meanwhile (bin/sound.sh).
 # A failure while virtual displays are on adds the line "virtual displays on": then no display sleep.
 # Usage: away.sh [safetySeconds]
 case "${1:-}" in
@@ -11,6 +11,7 @@ esac
 here="$(cd "$(dirname "$0")" && pwd)"
 helper="$here/display.sh"
 script="$here/blackout.js"
+sound="$here/sound.sh"
 status="$(mktemp -t away-keep-running)"
 
 # The real screens' ids, comma separated, as the graphics hardware sees them; empty when the
@@ -18,11 +19,13 @@ status="$(mktemp -t away-keep-running)"
 physical="$(sh "$helper" screens 2>/dev/null | cut -f1 | paste -sd, -)"
 
 # caffeinate -d keeps the displays awake, so the Mac never locks; the restore
-# step puts the brightness back however the blackout ended.
+# step puts the brightness and sound back however the blackout ended.
 (
   trap '' HUP
+  sh "$sound" mute
   caffeinate -d -i -s osascript -l JavaScript "$script" "$status" "$physical" "$helper" "$@"
   osascript -l JavaScript "$script" --restore "$status" "$helper"
+  sh "$sound" restore
 ) </dev/null >/dev/null 2>&1 &
 
 failed() {

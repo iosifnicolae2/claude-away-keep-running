@@ -3,6 +3,7 @@
 A Claude Code plugin for macOS: `/away` turns your screens off while the Mac stays awake, so Claude keeps working while you're gone. Open this file to install it, or to see how it works.
 
 - 🌙 **`/away`**: the screens go dark at once. The Mac doesn't sleep or lock, so running sessions, builds and agents carry on.
+- 🔇 **The Mac goes silent**: the sound is muted while you're away and comes back as it was, even after a crash or reboot ([bin/sound.sh](bin/sound.sh)).
 - 🖱️ **Move the mouse or press a key** and every screen comes back, with its brightness as it was.
 - 🧪 **Virtual displays stay on**: test, recording or streaming displays other apps made keep running.
 - 🤖 **The model can do it too**: say "I'm heading out, turn the screen off" and Claude calls the `screen_off` tool.
@@ -47,6 +48,7 @@ Needs macOS 12 or newer. No Accessibility permission: it reads how long since th
 ```sh
 claude plugin validate .
 claude plugin test .
+sh tests/sound.test.sh
 sh scripts/build-display-helper.sh   # after changing bin/display_helper.swift or .h; commit the binary and .sha256
 claude --plugin-dir .                # a session with your local copy loaded
 ```
